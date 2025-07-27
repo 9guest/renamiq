@@ -1,0 +1,24 @@
+{
+  "name": "renamiq",
+  "version": "1.0.0",
+  "description": "**Renamiq** is a sleek and powerful desktop app built with Electron.js for **bulk renaming files** using custom patterns. Whether you're organizing photos, code files, or music tracks, Renamiq helps you rename with precision and flexibility.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/9guest/renamiq.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/9guest/renamiq/issues"
+  },
+  "homepage": "https://github.com/9guest/renamiq#readme",
+  "devDependencies": {
+    "electron": "^37.2.4"
+  }
+}

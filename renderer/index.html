@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renamiq - Bulk File Renamer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.9);
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h3 {
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+
+        .drop-zone {
+            border: 2px dashed #ced4da;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(248, 249, 250, 0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drop-zone.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .drop-zone-icon {
+            font-size: 48px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .file-list {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-list-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 100px;
+            gap: 15px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .file-list-content {
+            height: calc(100vh - 280px);
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f1f3f4;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 100px;
+            gap: 15px;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .file-preview {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .file-size {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        .tokens {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .token {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .token:hover {
+            background: #bbdefb;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .status-bar {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .notification.info {
+            background: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="section">
+                <h3>🧩 Rename Pattern</h3>
+                <div class="form-group">
+                    <label for="pattern">Pattern</label>
+                    <input type="text" id="pattern" class="form-control" placeholder="Enter rename pattern..." value="{original}">
+                </div>
+                <div class="tokens">
+                    <span class="token" data-token="{index}">{index}</span>
+                    <span class="token" data-token="{date}">{date}</span>
+                    <span class="token" data-token="{time}">{time}</span>
+                    <span class="token" data-token="{original}">{original}</span>
+                    <span class="token" data-token="{ext}">{ext}</span>
+                    <span class="token" data-token="{name}">{name}</span>
+                    <span class="token" data-token="{counter}">{counter}</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>⚙️ Options</h3>
+                <div class="form-group">
+                    <label for="startIndex">Start Index</label>
+                    <input type="number" id="startIndex" class="form-control" value="1" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="step">Step</label>
+                    <input type="number" id="step" class="form-control" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="padding">Number Padding</label>
+                    <input type="number" id="padding" class="form-control" value="2" min="0" max="10">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="preserveExt"> Preserve Extension
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="enableUndo" checked> Enable Undo
+                    </label>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💼 Templates</h3>
+                <div class="template-actions">
+                    <button class="btn btn-secondary btn-small" id="saveTemplate">Save</button>
+                    <button class="btn btn-secondary btn-small" id="loadTemplate">Load</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="logo">
+                    <span>📁</span>
+                    <span>Renamiq</span>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" id="addFiles">
+                        <span>📄</span> Add Files
+                    </button>
+                    <button class="btn btn-secondary" id="addFolder">
+                        <span>📁</span> Add Folder
+                    </button>
+                    <button class="btn btn-danger" id="clearAll">
+                        <span>🗑️</span> Clear All
+                    </button>
+                    <button class="btn btn-success" id="renameAll" disabled>
+                        <span>✨</span> Rename All
+                    </button>
+                    <button class="btn btn-secondary" id="undoRename" disabled>
+                        <span>↶</span> Undo
+                    </button>
+                </div>
+            </div>
+
+            <div class="file-list" id="fileList">
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-icon">📁</div>
+                    <h3>Drag & Drop Files Here</h3>
+                    <p>Or use the buttons above to add files or folders</p>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <span id="fileCount">No files selected</span>
+                <span id="statusText">Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Renamiq {
+            constructor() {
+                this.files = [];
+                this.undoData = null;
+                this.isProcessing = false;
+                
+                this.initializeEventListeners();
+                this.updateUI();
+            }
+
+            initializeEventListeners() {
+                // Button events
+                document.getElementById('addFiles').addEventListener('click', () => this.addFiles());
+                document.getElementById('addFolder').addEventListener('click', () => this.addFolder());
+                document.getElementById('clearAll').addEventListener('click', () => this.clearAll());
+                document.getElementById('renameAll').addEventListener('click', () => this.renameAll());
+                document.getElementById('undoRename').addEventListener('click', () => this.undoRename());
+                document.getElementById('saveTemplate').addEventListener('click', () => this.saveTemplate());
+                document.getElementById('loadTemplate').addEventListener('click', () => this.loadTemplate());
+
+                // Pattern input
+                document.getElementById('pattern').addEventListener('input', () => this.updatePreview());
+                document.getElementById('startIndex').addEventListener('input', () => this.updatePreview());
+                document.getElementById('step').addEventListener('input', () => this.updatePreview());
+                document.getElementById('padding').addEventListener('input', () => this.updatePreview());
+                document.getElementById('preserveExt').addEventListener('change', () => this.updatePreview());
+
+                // Token clicks
+                document.querySelectorAll('.token').forEach(token => {
+                    token.addEventListener('click', () => {
+                        const patternInput = document.getElementById('pattern');
+                        const tokenValue = token.dataset.token;
+                        patternInput.value += tokenValue;
+                        this.updatePreview();
+                    });
+                });
+
+                // Drag and drop
+                const dropZone = document.getElementById('dropZone');
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('dragover');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                    this.handleFileDrop(e);
+                });
+
+                // Menu events
+                window.electronAPI.onMenuAddFiles(() => this.addFiles());
+                window.electronAPI.onMenuAddFolder(() => this.addFolder());
+                window.electronAPI.onMenuUndo(() => this.undoRename());
+                window.electronAPI.onMenuClearAll(() => this.clearAll());
+                window.electronAPI.onMenuSaveTemplate(() => this.saveTemplate());
+                window.electronAPI.onMenuLoadTemplate(() => this.loadTemplate());
+            }
+
+            async handleFileDrop(e) {
+                const files = Array.from(e.dataTransfer.files);
+                const filePaths = files.map(file => file.path);
+                
+                try {
+                    const fileInfos = await window.electronAPI.getFileInfo(filePaths);
+                    this.addFilesToList(fileInfos);
+                } catch (error) {
+                    this.showNotification('Error processing dropped files', 'error');
+                }
+            }
+
+            async addFiles() {
+                try {
+                    const files = await window.electronAPI.selectFiles();
+                    this.addFilesToList(files);
+                } catch (error) {
+                    this.showNotification('Error adding files', 'error');
+                }
+            }
+
+            async addFolder() {
+                try {
+                    const files = await window.electronAPI.selectFolder();
+                    this.addFilesToList(files);
+                } catch (error) {
+                    this.showNotification('Error adding folder', 'error');
+                }
+            }
+
+            addFilesToList(newFiles) {
+                // Avoid duplicates
+                const existingPaths = new Set(this.files.map(f => f.path));
+                const uniqueFiles = newFiles.filter(f => !existingPaths.has(f.path));
+                
+                this.files.push(...uniqueFiles);
+                this.updateUI();
+                this.updatePreview();
+                
+                if (uniqueFiles.length > 0) {
+                    this.showNotification(`Added ${uniqueFiles.length} file(s)`, 'success');
+                }
+            }
+
+            clearAll() {
+                this.files = [];
+                this.undoData = null;
+                this.updateUI();
+                this.showNotification('All files cleared', 'info');
+            }
+
+            generateNewName(file, index) {
+                const pattern = document.getElementById('pattern').value;
+                const startIndex = parseInt(document.getElementById('startIndex').value) || 1;
+                const step = parseInt(document.getElementById('step').value) || 1;
+                const padding = parseInt(document.getElementById('padding').value) || 2;
+                const preserveExt = document.getElementById('preserveExt').checked;
+
+                let newName = pattern;
+                const currentIndex = startIndex + (index * step);
+                const paddedIndex = currentIndex.toString().padStart(padding, '0');
+                
+                const tokens = {
+                    '{index}': paddedIndex,
+                    '{counter}': paddedIndex,
+                    '{date}': new Date().toISOString().split('T')[0],
+                    '{time}': new Date().toTimeString().split(' ')[0].replace(/:/g, '-'),
+                    '{original}': file.name,
+                    '{name}': file.name.replace(file.ext, ''),
+                    '{ext}': file.ext.replace('.', '')
+                };
+
+                // Replace tokens in the pattern
+                for (const [token, value] of Object.entries(tokens)) {
+                    const escapedToken = token.replace(/[{}]/g, '\\$&');
+                    newName = newName.replace(new RegExp(escapedToken, 'g'), value);
+                }
+
+                // Add extension if preserve extension is enabled and pattern doesn't include {ext}
+                if (preserveExt && !pattern.includes('{ext}') && file.ext) {
+                    newName += file.ext;
+                }
+
+                return newName;
+            }
+
+            updatePreview() {
+                if (this.files.length === 0) return;
+
+                this.files.forEach((file, index) => {
+                    file.newName = this.generateNewName(file, index);
+                });
+
+                this.renderFileList();
+            }
+
+            updateUI() {
+                const fileCount = document.getElementById('fileCount');
+                const renameBtn = document.getElementById('renameAll');
+                const undoBtn = document.getElementById('undoRename');
+
+                fileCount.textContent = this.files.length === 0 ? 'No files selected' : `${this.files.length} file(s)`;
+                renameBtn.disabled = this.files.length === 0 || this.isProcessing;
+                undoBtn.disabled = !this.undoData || this.isProcessing;
+
+                if (this.files.length === 0) {
+                    this.renderDropZone();
+                } else {
+                    this.renderFileList();
+                }
+            }
+
+            renderDropZone() {
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = `
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-icon">📁</div>
+                        <h3>Drag & Drop Files Here</h3>
+                        <p>Or use the buttons above to add files or folders</p>
+                    </div>
+                `;
+
+                // Re-attach drop zone events
+                const dropZone = document.getElementById('dropZone');
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('dragover');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                    this.handleFileDrop(e);
+                });
+            }
+
+            renderFileList() {
+                const fileList = document.getElementById('fileList');
+                
+                const header = `
+                    <div class="file-list-header">
+                        <div>Original Name</div>
+                        <div>New Name</div>
+                        <div>Size</div>
+                        <div>Actions</div>
+                    </div>
+                `;
+
+                const items = this.files.map((file, index) => {
+                    const size = this.formatFileSize(file.size);
+                    const newName = file.newName || file.name;
+                    const isChanged = newName !== file.name;
+                    
+                    return `
+                        <div class="file-item">
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-preview ${isChanged ? '' : 'file-preview'}">${newName}</div>
+                            <div class="file-size">${size}</div>
+                            <div class="file-actions">
+                                <button class="btn btn-danger btn-small" onclick="app.removeFile(${index})">×</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                fileList.innerHTML = `
+                    ${header}
+                    <div class="file-list-content">
+                        ${items}
+                    </div>
+                `;
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+
+            removeFile(index) {
+                this.files.splice(index, 1);
+                this.updateUI();
+                this.updatePreview();
+            }
+
+            async renameAll() {
+                if (this.files.length === 0) return;
+
+                this.isProcessing = true;
+                this.updateUI();
+                this.setStatus('Renaming files...');
+
+                const operations = this.files.map(file => ({
+                    oldPath: file.path,
+                    newName: file.newName || file.name
+                }));
+
+                console.log('Frontend: Starting rename operation with operations:', operations);
+
+                try {
+                    const result = await window.electronAPI.renameFiles(operations);
+                    console.log('Frontend: Received result from main process:', result);
+                    
+                    if (document.getElementById('enableUndo').checked) {
+                        this.undoData = result.undoData;
+                        console.log('Frontend: Undo data saved:', this.undoData);
+                    }
+
+                    const successCount = result.results.filter(r => r.success).length;
+                    const errorCount = result.results.filter(r => !r.success).length;
+                    
+                    console.log(`Frontend: Success count: ${successCount}, Error count: ${errorCount}`);
+
+                    // Update file paths for successful renames
+                    try {
+                        result.results.forEach((res, index) => {
+                            console.log(`Frontend: Processing result ${index}:`, res);
+                            if (res.success && this.files[index]) {
+                                console.log(`Frontend: Updating file ${index} from "${this.files[index].path}" to "${res.newPath}"`);
+                                this.files[index].path = res.newPath;
+                                // Get the basename using string manipulation instead of path module
+                                this.files[index].name = res.newPath.split('\\').pop().split('/').pop();
+                                console.log(`Frontend: Updated file ${index}:`, this.files[index]);
+                            }
+                        });
+                        console.log('Frontend: File path updates completed successfully');
+                    } catch (updateError) {
+                        console.error('Frontend: Error updating file paths:', updateError);
+                        throw updateError;
+                    }
+
+                    // Show success notification
+                    if (successCount > 0) {
+                        console.log('Frontend: Showing success notification');
+                        this.showNotification(`Successfully renamed ${successCount} file(s)`, 'success');
+                    }
+
+                    // Show error notification only if there are actual errors
+                    if (errorCount > 0) {
+                        const errors = result.results.filter(r => !r.success);
+                        console.log('Frontend: Processing errors:', errors);
+                        
+                        // Group errors by type
+                        const errorTypes = {};
+                        errors.forEach(err => {
+                            if (!errorTypes[err.error]) {
+                                errorTypes[err.error] = 0;
+                            }
+                            errorTypes[err.error]++;
+                        });
+                        
+                        let errorMessage = `${errorCount} file(s) failed to rename:\n`;
+                        Object.entries(errorTypes).forEach(([error, count]) => {
+                            errorMessage += `• ${error}: ${count} file(s)\n`;
+                        });
+                        
+                        console.log('Frontend: Showing error notification:', errorMessage);
+                        this.showNotification(errorMessage, 'error');
+                    }
+
+                    console.log('Frontend: Setting status to Ready');
+                    this.setStatus('Ready');
+                } catch (error) {
+                    console.error('Frontend: Error during rename operation:', error);
+                    console.error('Frontend: Error stack:', error.stack);
+                    this.showNotification(`Error during rename operation: ${error.message}`, 'error');
+                    this.setStatus('Error');
+                } finally {
+                    console.log('Frontend: Cleaning up - setting isProcessing to false');
+                    this.isProcessing = false;
+                    this.updateUI();
+                    this.updatePreview();
+                    console.log('Frontend: Rename operation cleanup completed');
+                }
+            }
+
+            async undoRename() {
+                if (!this.undoData) return;
+
+                this.isProcessing = true;
+                this.updateUI();
+                this.setStatus('Undoing rename...');
+
+                try {
+                    const results = await window.electronAPI.undoRename(this.undoData);
+                    const successCount = results.filter(r => r.success).length;
+                    
+                    if (successCount > 0) {
+                        this.showNotification(`Undid ${successCount} rename(s)`, 'success');
+                        
+                        // Update file paths for successful undos
+                        results.forEach((res, index) => {
+                            if (res.success) {
+                                this.files[index].path = res.newPath;
+                                this.files[index].name = res.newPath.split('\\').pop().split('/').pop();
+                            }
+                        });
+                    }
+
+                    this.undoData = null;
+                    this.setStatus('Ready');
+                } catch (error) {
+                    this.showNotification('Error during undo operation', 'error');
+                    this.setStatus('Error');
+                } finally {
+                    this.isProcessing = false;
+                    this.updateUI();
+                    this.updatePreview();
+                }
+            }
+
+            async saveTemplate() {
+                const templateData = {
+                    pattern: document.getElementById('pattern').value,
+                    startIndex: document.getElementById('startIndex').value,
+                    step: document.getElementById('step').value,
+                    padding: document.getElementById('padding').value,
+                    preserveExt: document.getElementById('preserveExt').checked,
+                    enableUndo: document.getElementById('enableUndo').checked
+                };
+
+                try {
+                    const result = await window.electronAPI.saveTemplate(templateData);
+                    if (result.success) {
+                        this.showNotification('Template saved successfully', 'success');
+                    } else {
+                        this.showNotification('Failed to save template', 'error');
+                    }
+                } catch (error) {
+                    this.showNotification('Error saving template', 'error');
+                }
+            }
+
+            async loadTemplate() {
+                try {
+                    const result = await window.electronAPI.loadTemplate();
+                    if (result.success) {
+                        const data = result.data;
+                        document.getElementById('pattern').value = data.pattern || '';
+                        document.getElementById('startIndex').value = data.startIndex || 1;
+                        document.getElementById('step').value = data.step || 1;
+                        document.getElementById('padding').value = data.padding || 2;
+                        document.getElementById('preserveExt').checked = data.preserveExt || false;
+                        document.getElementById('enableUndo').checked = data.enableUndo !== false;
+                        
+                        this.updatePreview();
+                        this.showNotification('Template loaded successfully', 'success');
+                    } else if (result.error !== 'Cancelled') {
+                        this.showNotification('Failed to load template', 'error');
+                    }
+                } catch (error) {
+                    this.showNotification('Error loading template', 'error');
+                }
+            }
+
+            setStatus(text) {
+                document.getElementById('statusText').textContent = text;
+            }
+
+            showNotification(message, type = 'info') {
+                // Remove existing notification
+                const existing = document.querySelector('.notification');
+                if (existing) {
+                    existing.remove();
+                }
+
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => notification.classList.add('show'), 100);
+
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // Initialize the app
+        const app = new Renamiq();
+        
+        // Make app globally accessible for inline event handlers
+        window.app = app;
+    </script>
+</body>
+</html>

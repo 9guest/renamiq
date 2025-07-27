@@ -1,24 +1,70 @@
 {
   "name": "renamiq",
   "version": "1.0.0",
-  "description": "**Renamiq** is a sleek and powerful desktop app built with Electron.js for **bulk renaming files** using custom patterns. Whether you're organizing photos, code files, or music tracks, Renamiq helps you rename with precision and flexibility.",
-  "main": "index.js",
+  "description": "A sleek and powerful desktop app for bulk renaming files using custom patterns",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "dev": "set NODE_ENV=development && electron .",
+    "dev:unix": "NODE_ENV=development electron .",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --publish=never"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/9guest/renamiq.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "file-renamer",
+    "bulk-rename",
+    "electron",
+    "desktop-app",
+    "file-management"
+  ],
+  "author": "kyuguest",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/9guest/renamiq/issues"
   },
   "homepage": "https://github.com/9guest/renamiq#readme",
   "devDependencies": {
-    "electron": "^37.2.4"
+    "cross-env": "^10.0.0",
+    "electron": "^37.2.4",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.kyuguest.renamiq",
+    "productName": "Renamiq",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }

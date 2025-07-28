@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renamiq - Bulk File Renamer</title>
+    <title>Renamiq - Smart File Renamer</title>
     <style>
         * {
             margin: 0;
@@ -11,10 +11,61 @@
             box-sizing: border-box;
         }
 
+        /* Light Theme (Green Essence) - Default */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            --container-bg: rgba(255, 255, 255, 0.9);
+            --sidebar-bg: rgba(255, 255, 255, 0.8);
+            --section-bg: rgba(255, 255, 255, 0.85);
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --file-list-bg: rgba(255, 255, 255, 0.85);
+            --file-list-header-bg: rgba(232, 245, 233, 0.8);
+            --status-bar-bg: rgba(255, 255, 255, 0.9);
+            --drop-zone-bg: rgba(232, 245, 233, 0.6);
+            --primary-color: #2e7d32;
+            --primary-gradient: linear-gradient(135deg, #4caf50, #2e7d32);
+            --text-color: #1b5e20;
+            --text-secondary: #2e7d32;
+            --text-muted: #4caf50;
+            --border-color: #c8e6c9;
+            --hover-bg: rgba(76, 175, 80, 0.08);
+            --form-bg: rgba(255, 255, 255, 0.9);
+            --form-border: #a5d6a7;
+            --form-focus: #4caf50;
+            --token-bg: rgba(76, 175, 80, 0.1);
+            --token-color: #2e7d32;
+        }
+
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --bg-gradient: #1a1a1a;
+            --container-bg: rgba(255, 255, 255, 0.03);
+            --sidebar-bg: rgba(255, 255, 255, 0.02);
+            --section-bg: rgba(255, 255, 255, 0.05);
+            --header-bg: rgba(255, 255, 255, 0.04);
+            --file-list-bg: rgba(255, 255, 255, 0.03);
+            --file-list-header-bg: rgba(255, 255, 255, 0.06);
+            --status-bar-bg: rgba(255, 255, 255, 0.04);
+            --drop-zone-bg: rgba(255, 255, 255, 0.02);
+            --primary-color: #bb86fc;
+            --primary-gradient: linear-gradient(135deg, #bb86fc, #6200ea);
+            --text-color: #e0e0e0;
+            --text-secondary: #b3b3b3;
+            --text-muted: #8a8a8a;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --hover-bg: rgba(187, 134, 252, 0.08);
+            --form-bg: #2d2d2d;
+            --form-border: #404040;
+            --form-focus: #bb86fc;
+            --token-bg: rgba(187, 134, 252, 0.15);
+            --token-color: #d0bcff;
+        }
+
+        /* Base Styles Using CSS Variables */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            background: var(--bg-gradient);
+            color: var(--text-color);
             height: 100vh;
             overflow: hidden;
         }
@@ -22,14 +73,14 @@
         .container {
             display: flex;
             height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--container-bg);
             backdrop-filter: blur(10px);
         }
 
         .sidebar {
             width: 350px;
-            background: rgba(255, 255, 255, 0.9);
-            border-right: 1px solid #e0e0e0;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
             padding: 20px;
             overflow-y: auto;
         }
@@ -43,22 +94,14 @@
 
         .header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--header-bg);
             padding: 15px 20px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border: 1px solid var(--border-color);
         }
 
         .controls {
@@ -80,45 +123,46 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--primary-gradient);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
         }
 
         .btn-secondary {
-            background: #f8f9fa;
-            color: #495057;
-            border: 1px solid #dee2e6;
+            background: var(--form-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: #e9ecef;
+            background: var(--hover-bg);
         }
 
         .btn-danger {
-            background: #dc3545;
+            background: #f44336;
             color: white;
         }
 
         .btn-danger:hover {
-            background: #c82333;
+            background: #d32f2f;
         }
 
         .btn-success {
-            background: #28a745;
+            background: #4caf50;
             color: white;
         }
 
         .btn-success:hover {
-            background: #218838;
+            background: #388e3c;
         }
 
         .section {
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
@@ -127,8 +171,10 @@
 
         .section h3 {
             margin-bottom: 15px;
-            color: #495057;
+            color: var(--text-secondary);
             font-size: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
         }
 
         .form-group {
@@ -139,62 +185,93 @@
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
-            color: #495057;
+            color: var(--text-secondary);
         }
 
         .form-control {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--form-border);
             border-radius: 4px;
             font-size: 14px;
             transition: border-color 0.3s ease;
+            background: var(--form-bg);
+            color: var(--text-color);
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+            border-color: var(--form-focus);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .pattern-input-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .pattern-input-group .form-control {
+            flex: 1;
+        }
+
+        .help-btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .drop-zone {
-            border: 2px dashed #ced4da;
+            border: 2px dashed var(--border-color);
             border-radius: 8px;
             padding: 40px 20px;
             text-align: center;
-            background: rgba(248, 249, 250, 0.8);
+            background: var(--drop-zone-bg);
             transition: all 0.3s ease;
             cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary-color);
+            background: var(--hover-bg);
         }
 
         .drop-zone.dragover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--primary-color);
+            background: var(--hover-bg);
         }
 
         .drop-zone-icon {
             font-size: 48px;
-            color: #6c757d;
+            color: var(--text-muted);
             margin-bottom: 10px;
         }
 
         .file-list {
             flex: 1;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 8px;
+            background: var(--file-list-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px 8px 0 0;
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .file-list-header {
-            background: #f8f9fa;
+            background: var(--file-list-header-bg);
             padding: 15px 20px;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid var(--border-color);
             display: grid;
             grid-template-columns: 2fr 2fr 1fr 100px;
             gap: 15px;
             font-weight: 600;
-            color: #495057;
+            color: var(--text-secondary);
         }
 
         .file-list-content {
@@ -204,7 +281,7 @@
 
         .file-item {
             padding: 12px 20px;
-            border-bottom: 1px solid #f1f3f4;
+            border-bottom: 1px solid var(--border-color);
             display: grid;
             grid-template-columns: 2fr 2fr 1fr 100px;
             gap: 15px;
@@ -213,21 +290,21 @@
         }
 
         .file-item:hover {
-            background: rgba(102, 126, 234, 0.05);
+            background: var(--hover-bg);
         }
 
         .file-name {
             font-weight: 500;
-            color: #495057;
+            color: var(--text-secondary);
         }
 
         .file-preview {
-            color: #6c757d;
+            color: var(--primary-color);
             font-style: italic;
         }
 
         .file-size {
-            color: #6c757d;
+            color: var(--text-muted);
             font-size: 12px;
         }
 
@@ -250,17 +327,24 @@
         }
 
         .token {
-            background: #e3f2fd;
-            color: #1976d2;
+            background: var(--token-bg);
+            color: var(--token-color);
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
         }
 
         .token:hover {
-            background: #bbdefb;
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .more-tokens {
+            background: var(--primary-gradient) !important;
+            color: white !important;
         }
 
         .template-actions {
@@ -270,26 +354,15 @@
         }
 
         .status-bar {
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--status-bar-bg);
             padding: 10px 20px;
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid var(--border-color);
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             font-size: 14px;
-            color: #6c757d;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
+            color: var(--text-muted);
+            border-radius: 0 0 8px 8px;
         }
 
         .notification {
@@ -310,26 +383,252 @@
         }
 
         .notification.success {
-            background: #28a745;
+            background: #4caf50;
         }
 
         .notification.error {
-            background: #dc3545;
+            background: #f44336;
         }
 
         .notification.info {
-            background: #17a2b8;
+            background: #2196f3;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: var(--header-bg);
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+
+        .close-modal {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: 0;
+            max-height: calc(80vh - 80px);
+            overflow-y: auto;
+        }
+
+        .help-tabs {
+            display: flex;
+            background: var(--file-list-header-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            padding: 15px 25px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-button.active {
+            background: var(--section-bg);
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .token-category {
+            margin-bottom: 25px;
+        }
+
+        .token-category h4 {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .token-item {
+            background: var(--form-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .token-item:hover {
+            background: var(--hover-bg);
+            border-color: var(--primary-color);
+        }
+
+        .token-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-family: monospace;
+        }
+
+        .token-description {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .example-item {
+            background: var(--form-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .example-pattern {
+            font-family: monospace;
+            background: var(--token-bg);
+            padding: 5px 8px;
+            border-radius: 4px;
+            color: var(--token-color);
+            margin-bottom: 8px;
+        }
+
+        .example-result {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .shortcut-key {
+            background: var(--token-bg);
+            color: var(--token-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        /* Dark Theme Specific Overrides */
+        [data-theme="dark"] .btn-primary:hover {
+            box-shadow: 0 4px 12px rgba(187, 134, 252, 0.4);
+        }
+
+        [data-theme="dark"] .form-control:focus {
+            box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+        }
+
+        [data-theme="dark"] .btn-secondary {
+            background: #2d2d2d;
+            color: #e0e0e0;
+            border: 1px solid #404040;
+        }
+
+        [data-theme="dark"] .btn-secondary:hover {
+            background: #3d3d3d;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--drop-zone-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        [data-theme="dark"] ::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        [data-theme="dark"] ::-webkit-scrollbar-thumb {
+            background: #505050;
+        }
+
+        [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+            background: #606060;
         }
     </style>
 </head>
-<body>
+<body data-theme="light">
     <div class="container">
         <div class="sidebar">
             <div class="section">
                 <h3>🧩 Rename Pattern</h3>
                 <div class="form-group">
                     <label for="pattern">Pattern</label>
-                    <input type="text" id="pattern" class="form-control" placeholder="Enter rename pattern..." value="{original}">
+                    <div class="pattern-input-group">
+                        <input type="text" id="pattern" class="form-control" placeholder="Enter rename pattern..." value="{original}">
+                        <button class="btn btn-secondary help-btn" id="helpButton" title="Help & Token Reference">
+                            <span>❓</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="tokens">
                     <span class="token" data-token="{index}">{index}</span>
@@ -339,6 +638,7 @@
                     <span class="token" data-token="{ext}">{ext}</span>
                     <span class="token" data-token="{name}">{name}</span>
                     <span class="token" data-token="{counter}">{counter}</span>
+                    <span class="token more-tokens" id="moreTokens">+ More</span>
                 </div>
             </div>
 
@@ -375,14 +675,27 @@
                     <button class="btn btn-secondary btn-small" id="loadTemplate">Load</button>
                 </div>
             </div>
+
+            <div class="section">
+                <h3>🎨 Appearance</h3>
+                <div class="form-group">
+                    <label for="themeSelect">Theme</label>
+                    <select id="themeSelect" class="form-control">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section" style="padding: 15px 20px;">
+                <button class="btn btn-secondary" id="aboutButton" style="width: 100%;">
+                    <span>ℹ️</span> About Renamiq
+                </button>
+            </div>
         </div>
 
         <div class="main-content">
             <div class="header">
-                <div class="logo">
-                    <span>📁</span>
-                    <span>Renamiq</span>
-                </div>
                 <div class="controls">
                     <button class="btn btn-secondary" id="addFiles">
                         <span>📄</span> Add Files
@@ -417,6 +730,41 @@
         </div>
     </div>
 
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🆘 Renamiq Help & Token Reference</h2>
+                <span class="close-modal" id="closeHelp">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="help-tabs">
+                    <button class="tab-button active" data-tab="tokens">Tokens</button>
+                    <button class="tab-button" data-tab="examples">Examples</button>
+                    <button class="tab-button" data-tab="shortcuts">Shortcuts</button>
+                </div>
+                
+                <div id="tokens-tab" class="tab-content active">
+                    <div class="token-categories">
+                        <!-- Token categories will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div id="examples-tab" class="tab-content">
+                    <div class="examples-list">
+                        <!-- Examples will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div id="shortcuts-tab" class="tab-content">
+                    <div class="shortcuts-list">
+                        <!-- Shortcuts will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         class Renamiq {
             constructor() {
@@ -426,6 +774,11 @@
                 
                 this.initializeEventListeners();
                 this.updateUI();
+
+                // Load saved theme
+                const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+                document.getElementById('themeSelect').value = savedTheme;
+                this.changeTheme(savedTheme);
             }
 
             initializeEventListeners() {
@@ -437,6 +790,7 @@
                 document.getElementById('undoRename').addEventListener('click', () => this.undoRename());
                 document.getElementById('saveTemplate').addEventListener('click', () => this.saveTemplate());
                 document.getElementById('loadTemplate').addEventListener('click', () => this.loadTemplate());
+                document.getElementById('aboutButton').addEventListener('click', () => this.showAbout());
 
                 // Pattern input
                 document.getElementById('pattern').addEventListener('input', () => this.updatePreview());
@@ -447,30 +801,47 @@
 
                 // Token clicks
                 document.querySelectorAll('.token').forEach(token => {
-                    token.addEventListener('click', () => {
-                        const patternInput = document.getElementById('pattern');
-                        const tokenValue = token.dataset.token;
-                        patternInput.value += tokenValue;
-                        this.updatePreview();
-                    });
+                    if (!token.classList.contains('more-tokens')) {
+                        token.addEventListener('click', () => {
+                            const patternInput = document.getElementById('pattern');
+                            const tokenValue = token.dataset.token;
+                            if (tokenValue) {
+                                patternInput.value += tokenValue;
+                                this.updatePreview();
+                            }
+                        });
+                    }
                 });
 
-                // Drag and drop
-                const dropZone = document.getElementById('dropZone');
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.add('dragover');
+                // Theme selector
+                document.getElementById('themeSelect').addEventListener('change', (e) => {
+                    this.changeTheme(e.target.value);
                 });
 
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.classList.remove('dragover');
+                // Help system
+                document.getElementById('helpButton').addEventListener('click', () => this.showHelp());
+                document.getElementById('moreTokens').addEventListener('click', () => this.showHelp());
+                document.getElementById('closeHelp').addEventListener('click', () => this.hideHelp());
+                
+                // Tab switching
+                document.querySelectorAll('.tab-button').forEach(tab => {
+                    tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
+                });
+                
+                // Close modal on outside click
+                document.getElementById('helpModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'helpModal') this.hideHelp();
                 });
 
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('dragover');
-                    this.handleFileDrop(e);
+                // Escape key to close modal
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && document.getElementById('helpModal').style.display === 'flex') {
+                        this.hideHelp();
+                    }
                 });
+
+                // Initialize drag and drop for initial drop zone
+                this.initializeDropZone();
 
                 // Menu events
                 window.electronAPI.onMenuAddFiles(() => this.addFiles());
@@ -479,6 +850,39 @@
                 window.electronAPI.onMenuClearAll(() => this.clearAll());
                 window.electronAPI.onMenuSaveTemplate(() => this.saveTemplate());
                 window.electronAPI.onMenuLoadTemplate(() => this.loadTemplate());
+
+                // Help menu events
+                window.electronAPI.onMenuHelpTokens(() => this.showHelp('tokens'));
+                window.electronAPI.onMenuHelpExamples(() => this.showHelp('examples'));
+                window.electronAPI.onMenuHelpShortcuts(() => this.showHelp('shortcuts'));
+                window.electronAPI.onMenuAbout(() => this.showAbout());
+
+            }
+
+            initializeDropZone() {
+                const dropZone = document.getElementById('dropZone');
+                if (dropZone) {
+                    dropZone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        dropZone.classList.add('dragover');
+                    });
+
+                    dropZone.addEventListener('dragleave', () => {
+                        dropZone.classList.remove('dragover');
+                    });
+
+                    dropZone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        dropZone.classList.remove('dragover');
+                        this.handleFileDrop(e);
+                    });
+                }
+            }
+
+            changeTheme(themeName) {
+                document.body.setAttribute('data-theme', themeName);
+                localStorage.setItem('selectedTheme', themeName);
+                this.showNotification(`Theme changed to ${themeName}`, 'info');
             }
 
             async handleFileDrop(e) {
@@ -496,7 +900,9 @@
             async addFiles() {
                 try {
                     const files = await window.electronAPI.selectFiles();
-                    this.addFilesToList(files);
+                    if (files && files.length > 0) {
+                        this.addFilesToList(files);
+                    }
                 } catch (error) {
                     this.showNotification('Error adding files', 'error');
                 }
@@ -505,13 +911,17 @@
             async addFolder() {
                 try {
                     const files = await window.electronAPI.selectFolder();
-                    this.addFilesToList(files);
+                    if (files && files.length > 0) {
+                        this.addFilesToList(files);
+                    }
                 } catch (error) {
                     this.showNotification('Error adding folder', 'error');
                 }
             }
 
             addFilesToList(newFiles) {
+                if (!newFiles || newFiles.length === 0) return;
+
                 // Avoid duplicates
                 const existingPaths = new Set(this.files.map(f => f.path));
                 const uniqueFiles = newFiles.filter(f => !existingPaths.has(f.path));
@@ -543,28 +953,105 @@
                 const currentIndex = startIndex + (index * step);
                 const paddedIndex = currentIndex.toString().padStart(padding, '0');
                 
+                // Random character generators
+                const generateRandom = (chars, length) => {
+                    let result = '';
+                    for (let i = 0; i < length; i++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return result;
+                };
+
+                const alphaNumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                const numeric = '0123456789';
+                const upperAlpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const lowerAlpha = 'abcdefghijklmnopqrstuvwxyz';
+
                 const tokens = {
+                    // Basic tokens
                     '{index}': paddedIndex,
                     '{counter}': paddedIndex,
                     '{date}': new Date().toISOString().split('T')[0],
                     '{time}': new Date().toTimeString().split(' ')[0].replace(/:/g, '-'),
                     '{original}': file.name,
-                    '{name}': file.name.replace(file.ext, ''),
-                    '{ext}': file.ext.replace('.', '')
+                    '{name}': file.name.replace(/\.[^/.]+$/, ''),
+                    '{ext}': file.ext ? file.ext.replace('.', '') : '',
+                    
+                    // Date/time tokens
+                    '{year}': new Date().getFullYear().toString(),
+                    '{year2}': new Date().getFullYear().toString().slice(-2),
+                    '{month}': (new Date().getMonth() + 1).toString().padStart(2, '0'),
+                    '{month_name}': new Date().toLocaleString('default', { month: 'long' }),
+                    '{month_short}': new Date().toLocaleString('default', { month: 'short' }),
+                    '{day}': new Date().getDate().toString().padStart(2, '0'),
+                    '{weekday}': new Date().toLocaleString('default', { weekday: 'long' }),
+                    '{weekday_short}': new Date().toLocaleString('default', { weekday: 'short' }),
+                    '{hour}': new Date().getHours().toString().padStart(2, '0'),
+                    '{hour12}': (new Date().getHours() % 12 || 12).toString().padStart(2, '0'),
+                    '{minute}': new Date().getMinutes().toString().padStart(2, '0'),
+                    '{second}': new Date().getSeconds().toString().padStart(2, '0'),
+                    '{ampm}': new Date().getHours() >= 12 ? 'PM' : 'AM',
+                    '{timestamp}': Math.floor(Date.now() / 1000).toString(),
+                    
+                    // File/path tokens
+                    '{parent}': file.path.split(/[\\\/]/).slice(-2, -1)[0] || '',
+                    '{size}': file.size.toString(),
+                    '{size_kb}': Math.round(file.size / 1024).toString(),
+                    '{size_mb}': (file.size / (1024 * 1024)).toFixed(2),
+                    '{ext_upper}': file.ext ? file.ext.replace('.', '').toUpperCase() : '',
+                    '{ext_lower}': file.ext ? file.ext.replace('.', '').toLowerCase() : '',
+                    '{name_upper}': file.name.replace(/\.[^/.]+$/, '').toUpperCase(),
+                    '{name_lower}': file.name.replace(/\.[^/.]+$/, '').toLowerCase(),
+                    '{name_title}': file.name.replace(/\.[^/.]+$/, '').replace(/\w\S*/g, (txt) => 
+                        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()),
+                    
+                    // Random tokens
+                    '{random}': generateRandom(alphaNumeric, padding || 5),
+                    '{random_alpha}': generateRandom(alpha, padding || 5),
+                    '{random_num}': generateRandom(numeric, padding || 5),
+                    '{random_upper}': generateRandom(upperAlpha, padding || 5),
+                    '{random_lower}': generateRandom(lowerAlpha, padding || 5),
+                    '{uuid}': Math.random().toString(36).substr(2, 8),
+                    '{uuid_short}': Math.random().toString(36).substr(2, 8),
+                    
+                    // Sequence tokens
+                    '{alpha}': String.fromCharCode(65 + (currentIndex - 1) % 26),
+                    '{alpha_lower}': String.fromCharCode(97 + (currentIndex - 1) % 26),
+                    '{roman}': this.toRoman(currentIndex),
+                    '{roman_lower}': this.toRoman(currentIndex).toLowerCase(),
+                    '{hex}': currentIndex.toString(16).toUpperCase(),
+                    '{binary}': currentIndex.toString(2)
                 };
 
-                // Replace tokens in the pattern
-                for (const [token, value] of Object.entries(tokens)) {
-                    const escapedToken = token.replace(/[{}]/g, '\\$&');
-                    newName = newName.replace(new RegExp(escapedToken, 'g'), value);
-                }
+                // Replace all tokens
+                Object.entries(tokens).forEach(([token, value]) => {
+                    newName = newName.replace(new RegExp(token.replace(/[{}]/g, '\\$&'), 'g'), value);
+                });
 
-                // Add extension if preserve extension is enabled and pattern doesn't include {ext}
+                // Add extension if preserve extension is enabled
                 if (preserveExt && !pattern.includes('{ext}') && file.ext) {
                     newName += file.ext;
                 }
 
                 return newName;
+            }
+
+            toRoman(num) {
+                const romanNumerals = [
+                    ['M', 1000], ['CM', 900], ['D', 500], ['CD', 400],
+                    ['C', 100], ['XC', 90], ['L', 50], ['XL', 40],
+                    ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]
+                ];
+                
+                let result = '';
+                for (const [roman, value] of romanNumerals) {
+                    while (num >= value) {
+                        result += roman;
+                        num -= value;
+                    }
+                }
+                return result;
             }
 
             updatePreview() {
@@ -603,22 +1090,8 @@
                     </div>
                 `;
 
-                // Re-attach drop zone events
-                const dropZone = document.getElementById('dropZone');
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.add('dragover');
-                });
-
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.classList.remove('dragover');
-                });
-
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('dragover');
-                    this.handleFileDrop(e);
-                });
+                // Re-initialize drop zone events
+                this.initializeDropZone();
             }
 
             renderFileList() {
@@ -674,92 +1147,52 @@
 
             async renameAll() {
                 if (this.files.length === 0) return;
-
+                
+                const enableUndo = document.getElementById('enableUndo').checked;
+                
                 this.isProcessing = true;
                 this.updateUI();
                 this.setStatus('Renaming files...');
 
-                const operations = this.files.map(file => ({
-                    oldPath: file.path,
-                    newName: file.newName || file.name
-                }));
-
-                console.log('Frontend: Starting rename operation with operations:', operations);
-
                 try {
-                    const result = await window.electronAPI.renameFiles(operations);
-                    console.log('Frontend: Received result from main process:', result);
-                    
-                    if (document.getElementById('enableUndo').checked) {
-                        this.undoData = result.undoData;
-                        console.log('Frontend: Undo data saved:', this.undoData);
-                    }
+                    const renameOperations = this.files.map(file => ({
+                        oldPath: file.path,
+                        newName: file.newName
+                    }));
 
+                    const result = await window.electronAPI.renameFiles(renameOperations);
                     const successCount = result.results.filter(r => r.success).length;
-                    const errorCount = result.results.filter(r => !r.success).length;
-                    
-                    console.log(`Frontend: Success count: ${successCount}, Error count: ${errorCount}`);
+                    const failCount = result.results.filter(r => !r.success).length;
 
-                    // Update file paths for successful renames
-                    try {
-                        result.results.forEach((res, index) => {
-                            console.log(`Frontend: Processing result ${index}:`, res);
-                            if (res.success && this.files[index]) {
-                                console.log(`Frontend: Updating file ${index} from "${this.files[index].path}" to "${res.newPath}"`);
-                                this.files[index].path = res.newPath;
-                                // Get the basename using string manipulation instead of path module
-                                this.files[index].name = res.newPath.split('\\').pop().split('/').pop();
-                                console.log(`Frontend: Updated file ${index}:`, this.files[index]);
-                            }
-                        });
-                        console.log('Frontend: File path updates completed successfully');
-                    } catch (updateError) {
-                        console.error('Frontend: Error updating file paths:', updateError);
-                        throw updateError;
-                    }
-
-                    // Show success notification
                     if (successCount > 0) {
-                        console.log('Frontend: Showing success notification');
-                        this.showNotification(`Successfully renamed ${successCount} file(s)`, 'success');
-                    }
-
-                    // Show error notification only if there are actual errors
-                    if (errorCount > 0) {
-                        const errors = result.results.filter(r => !r.success);
-                        console.log('Frontend: Processing errors:', errors);
+                        this.showNotification(`${successCount} file(s) renamed successfully`, 'success');
                         
-                        // Group errors by type
-                        const errorTypes = {};
-                        errors.forEach(err => {
-                            if (!errorTypes[err.error]) {
-                                errorTypes[err.error] = 0;
+                        // Update file paths for successful renames
+                        result.results.forEach((res, index) => {
+                            if (res.success) {
+                                this.files[index].path = res.newPath;
+                                this.files[index].name = res.newPath.split('\\').pop().split('/').pop();
                             }
-                            errorTypes[err.error]++;
                         });
-                        
-                        let errorMessage = `${errorCount} file(s) failed to rename:\n`;
-                        Object.entries(errorTypes).forEach(([error, count]) => {
-                            errorMessage += `• ${error}: ${count} file(s)\n`;
-                        });
-                        
-                        console.log('Frontend: Showing error notification:', errorMessage);
-                        this.showNotification(errorMessage, 'error');
+
+                        // Store undo data if enabled
+                        if (enableUndo && result.undoData && result.undoData.length > 0) {
+                            this.undoData = result.undoData;
+                        }
                     }
 
-                    console.log('Frontend: Setting status to Ready');
+                    if (failCount > 0) {
+                        this.showNotification(`${failCount} file(s) failed to rename`, 'error');
+                    }
+
                     this.setStatus('Ready');
                 } catch (error) {
-                    console.error('Frontend: Error during rename operation:', error);
-                    console.error('Frontend: Error stack:', error.stack);
-                    this.showNotification(`Error during rename operation: ${error.message}`, 'error');
+                    this.showNotification('Error during rename operation', 'error');
                     this.setStatus('Error');
                 } finally {
-                    console.log('Frontend: Cleaning up - setting isProcessing to false');
                     this.isProcessing = false;
                     this.updateUI();
                     this.updatePreview();
-                    console.log('Frontend: Rename operation cleanup completed');
                 }
             }
 
@@ -775,7 +1208,7 @@
                     const successCount = results.filter(r => r.success).length;
                     
                     if (successCount > 0) {
-                        this.showNotification(`Undid ${successCount} rename(s)`, 'success');
+                        this.showNotification(`${successCount} file(s) reverted back to original name(s)`, 'success');
                         
                         // Update file paths for successful undos
                         results.forEach((res, index) => {
@@ -801,11 +1234,12 @@
             async saveTemplate() {
                 const templateData = {
                     pattern: document.getElementById('pattern').value,
-                    startIndex: document.getElementById('startIndex').value,
-                    step: document.getElementById('step').value,
-                    padding: document.getElementById('padding').value,
+                    startIndex: parseInt(document.getElementById('startIndex').value) || 1,
+                    step: parseInt(document.getElementById('step').value) || 1,
+                    padding: parseInt(document.getElementById('padding').value) || 2,
                     preserveExt: document.getElementById('preserveExt').checked,
-                    enableUndo: document.getElementById('enableUndo').checked
+                    enableUndo: document.getElementById('enableUndo').checked,
+                    theme: document.getElementById('themeSelect').value
                 };
 
                 try {
@@ -813,7 +1247,7 @@
                     if (result.success) {
                         this.showNotification('Template saved successfully', 'success');
                     } else {
-                        this.showNotification('Failed to save template', 'error');
+                        this.showNotification(`Failed to save template: ${result.error}`, 'error');
                     }
                 } catch (error) {
                     this.showNotification('Error saving template', 'error');
@@ -825,17 +1259,28 @@
                     const result = await window.electronAPI.loadTemplate();
                     if (result.success) {
                         const data = result.data;
-                        document.getElementById('pattern').value = data.pattern || '';
+                        
+                        // Apply template data to form controls
+                        document.getElementById('pattern').value = data.pattern || '{original}';
                         document.getElementById('startIndex').value = data.startIndex || 1;
                         document.getElementById('step').value = data.step || 1;
                         document.getElementById('padding').value = data.padding || 2;
                         document.getElementById('preserveExt').checked = data.preserveExt || false;
                         document.getElementById('enableUndo').checked = data.enableUndo !== false;
                         
+                        if (data.theme) {
+                            document.getElementById('themeSelect').value = data.theme;
+                            this.changeTheme(data.theme);
+                        }
+                        
+                        // Update preview with new pattern
                         this.updatePreview();
+                        
                         this.showNotification('Template loaded successfully', 'success');
-                    } else if (result.error !== 'Cancelled') {
-                        this.showNotification('Failed to load template', 'error');
+                    } else {
+                        if (result.error !== 'Cancelled') {
+                            this.showNotification(`Failed to load template: ${result.error}`, 'error');
+                        }
                     }
                 } catch (error) {
                     this.showNotification('Error loading template', 'error');
@@ -867,12 +1312,209 @@
                     setTimeout(() => notification.remove(), 300);
                 }, 3000);
             }
+
+            showHelp(activeTab = 'tokens') {
+                this.populateHelpContent();
+                this.switchTab(activeTab);
+                document.getElementById('helpModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            hideHelp() {
+                document.getElementById('helpModal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.tab === tabName);
+                });
+                
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.toggle('active', content.id === `${tabName}-tab`);
+                });
+            }
+
+            populateHelpContent() {
+                this.populateTokens();
+                this.populateExamples();
+                this.populateShortcuts();
+            }
+
+            populateTokens() {
+                const tokenCategories = {
+                    'Basic Tokens': [
+                        { token: '{index}', desc: 'Sequential number with padding' },
+                        { token: '{counter}', desc: 'Alias for {index}' },
+                        { token: '{original}', desc: 'Full original filename' },
+                        { token: '{name}', desc: 'Filename without extension' },
+                        { token: '{ext}', desc: 'File extension without dot' }
+                    ],
+                    'Date & Time': [
+                        { token: '{date}', desc: 'Current date (YYYY-MM-DD)' },
+                        { token: '{time}', desc: 'Current time (HH-MM-SS)' },
+                        { token: '{year}', desc: 'Full year (2025)' },
+                        { token: '{year2}', desc: '2-digit year (25)' },
+                        { token: '{month}', desc: 'Month number (01-12)' },
+                        { token: '{month_name}', desc: 'Full month name' },
+                        { token: '{day}', desc: 'Day of month (01-31)' },
+                        { token: '{hour}', desc: '24-hour format (00-23)' },
+                        { token: '{minute}', desc: 'Minutes (00-59)' },
+                        { token: '{timestamp}', desc: 'Unix timestamp' }
+                    ],
+                    'File Information': [
+                        { token: '{parent}', desc: 'Parent folder name' },
+                        { token: '{size}', desc: 'File size in bytes' },
+                        { token: '{size_kb}', desc: 'File size in KB' },
+                        { token: '{size_mb}', desc: 'File size in MB' },
+                        { token: '{name_upper}', desc: 'Filename in uppercase' },
+                        { token: '{name_lower}', desc: 'Filename in lowercase' },
+                        { token: '{ext_upper}', desc: 'Extension in uppercase' }
+                    ],
+                    'Random & Sequences': [
+                        { token: '{random}', desc: 'Random alphanumeric string' },
+                        { token: '{uuid}', desc: 'UUID first segment' },
+                        { token: '{alpha}', desc: 'Alphabetic sequence (A, B, C...)' },
+                        { token: '{roman}', desc: 'Roman numerals (I, II, III...)' },
+                        { token: '{hex}', desc: 'Hexadecimal sequence' },
+                        { token: '{binary}', desc: 'Binary sequence' }
+                    ]
+                };
+                
+                const container = document.querySelector('.token-categories');
+                container.innerHTML = Object.entries(tokenCategories).map(([category, tokens]) => `
+                    <div class="token-category">
+                        <h4>${category}</h4>
+                        <div class="token-grid">
+                            ${tokens.map(token => `
+                                <div class="token-item" onclick="app.insertToken('${token.token}')">
+                                    <div class="token-name">${token.token}</div>
+                                    <div class="token-description">${token.desc}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            populateExamples() {
+                const examples = [
+                    { pattern: 'Photo_{index}', result: 'Photo_01, Photo_02, Photo_03...' },
+                    { pattern: '{date}_{name}', result: '2025-01-28_document, 2025-01-28_image...' },
+                    { pattern: 'IMG_{year}{month}{day}_{counter}', result: 'IMG_20250128_001, IMG_20250128_002...' },
+                    { pattern: '{name_title}_{timestamp}', result: 'Document_1738012345, Image_1738012346...' },
+                    { pattern: 'Backup_{time}_{original}', result: 'Backup_14-30-25_file.txt...' },
+                    { pattern: '{parent}_{alpha}_{name}', result: 'Folder_A_document, Folder_B_image...' }
+                ];
+                
+                const container = document.querySelector('.examples-list');
+                container.innerHTML = examples.map(example => `
+                    <div class="example-item">
+                        <div class="example-pattern">${example.pattern}</div>
+                        <div class="example-result">→ ${example.result}</div>
+                    </div>
+                `).join('');
+            }
+
+            populateShortcuts() {
+                const shortcuts = [
+                    { key: 'Ctrl+O', desc: 'Add Files' },
+                    { key: 'Ctrl+Shift+O', desc: 'Add Folder' },
+                    { key: 'Ctrl+Z', desc: 'Undo Rename' },
+                    { key: 'Ctrl+Shift+C', desc: 'Clear All' },
+                    { key: 'Ctrl+S', desc: 'Save Template' },
+                    { key: 'Ctrl+L', desc: 'Load Template' },
+                    { key: 'Alt', desc: 'Show Application Menu' },
+                    { key: 'F1', desc: 'Show Help' },
+                    { key: 'F2', desc: 'About Renamiq' },
+                    { key: 'Escape', desc: 'Close Help/About Renamiq' }
+                ];
+                
+                const container = document.querySelector('.shortcuts-list');
+                container.innerHTML = shortcuts.map(shortcut => `
+                    <div class="shortcut-item">
+                        <span>${shortcut.desc}</span>
+                        <span class="shortcut-key">${shortcut.key}</span>
+                    </div>
+                `).join('');
+            }
+
+            insertToken(token) {
+                const patternInput = document.getElementById('pattern');
+                patternInput.value += token;
+                this.updatePreview();
+                this.hideHelp();
+                patternInput.focus();
+            }
+
+            showAbout() {
+                // Create and show about dialog
+                const aboutContent = `
+                    <div style="text-align: center; padding: 30px;">
+                        <h1 style="color: var(--primary-color); margin-bottom: 10px;">🗂️ Renamiq</h1>
+                        <p style="font-size: 18px; margin-bottom: 20px;">Version 1.0.0</p>
+                        <p style="margin-bottom: 15px;">A sleek and powerful desktop app for bulk renaming files using custom patterns.</p>
+                        <p style="margin-bottom: 20px;">Built with ❤️ using Electron.js</p>
+                        <p style="font-size: 14px; color: var(--text-muted);">
+                            Developer: <strong>kyuguest (夜城)</strong><br>
+                            License: MIT<br>
+                            GitHub: <a href="#" style="color: var(--primary-color);">github.com/9guest/renamiq</a>
+                        </p>
+                    </div>
+                `;
+                
+                // Create temporary about modal
+                const aboutModal = document.createElement('div');
+                aboutModal.className = 'modal';
+                aboutModal.style.display = 'flex';
+                aboutModal.innerHTML = `
+                    <div class="modal-content" style="max-width: 500px;">
+                        <div class="modal-header">
+                            <h2>About Renamiq</h2>
+                            <span class="close-modal" onclick="this.closest('.modal').remove()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            ${aboutContent}
+                        </div>
+                    </div>
+                `;
+                
+                // Function to close the modal
+                const closeModal = () => {
+                    aboutModal.remove();
+                    document.body.style.overflow = 'auto';
+                    // Remove the escape key listener when modal is closed
+                    document.removeEventListener('keydown', escapeHandler);
+                };
+                
+                // Escape key handler
+                const escapeHandler = (e) => {
+                    if (e.key === 'Escape') {
+                        closeModal();
+                    }
+                };
+                
+                // Close on outside click
+                aboutModal.addEventListener('click', (e) => {
+                    if (e.target === aboutModal) closeModal();
+                });
+                
+                // Add escape key listener
+                document.addEventListener('keydown', escapeHandler);
+                
+                document.body.appendChild(aboutModal);
+                document.body.style.overflow = 'hidden';
+                
+                // Auto-remove when close button is clicked
+                const closeBtn = aboutModal.querySelector('.close-modal');
+                closeBtn.addEventListener('click', closeModal);
+            }
         }
 
         // Initialize the app
         const app = new Renamiq();
-        
-        // Make app globally accessible for inline event handlers
         window.app = app;
     </script>
 </body>

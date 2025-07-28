@@ -21,7 +21,9 @@ function createWindow() {
     },
     icon: path.join(__dirname, 'assets', 'icon.png'),
     titleBarStyle: 'default',
-    show: false
+    show: false,
+    autoHideMenuBar: true,
+    title: 'Renamiq - Smart File Renamer'
   });
 
   mainWindow.loadFile('renderer/index.html');
@@ -36,10 +38,8 @@ function createWindow() {
   }
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-    
-    mainWindow.webContents.openDevTools();
-    
+    mainWindow.show();    
+    mainWindow.focus();
   });
 
   // Create application menu
@@ -93,6 +93,32 @@ function createWindow() {
           label: 'Load Template',
           accelerator: 'CmdOrCtrl+L',
           click: () => mainWindow.webContents.send('menu-load-template')
+        }
+      ]
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'Token Reference',
+          accelerator: 'F1',
+          click: () => mainWindow.webContents.send('menu-help-tokens')
+        },
+        {
+          label: 'Pattern Examples',
+          accelerator: 'Shift+F1',
+          click: () => mainWindow.webContents.send('menu-help-examples')
+        },
+        {
+          label: 'Keyboard Shortcuts',
+          accelerator: 'Ctrl+Shift+K',
+          click: () => mainWindow.webContents.send('menu-help-shortcuts')
+        },
+        { type: 'separator' },
+        {
+          label: 'About Renamiq',
+          accelerator: 'F2',
+          click: () => mainWindow.webContents.send('menu-about')
         }
       ]
     }

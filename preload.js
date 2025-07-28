@@ -21,6 +21,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onMenuSaveTemplate: (callback) => ipcRenderer.on('menu-save-template', callback),
   onMenuLoadTemplate: (callback) => ipcRenderer.on('menu-load-template', callback),
   
+  // Help menu events
+  onMenuHelpTokens: (callback) => ipcRenderer.on('menu-help-tokens', callback),
+  onMenuHelpExamples: (callback) => ipcRenderer.on('menu-help-examples', callback),
+  onMenuHelpShortcuts: (callback) => ipcRenderer.on('menu-help-shortcuts', callback),
+  onMenuAbout: (callback) => ipcRenderer.on('menu-about', callback),
+  
   // Utility
   path: {
     basename: (filePath) => require('path').basename(filePath),

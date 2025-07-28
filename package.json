@@ -62,14 +62,12 @@
       "!**/*.md",
       "!**/.git/**/*"
     ],
-    "extraResources": [
-      "assets/icon.*"
-    ],
+    "publish": null,
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": ["x64"]
         },
         {
           "target": "portable",
@@ -77,7 +75,9 @@
         }
       ],
       "icon": "assets/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "forceCodeSigning": false,
+      "signAndEditExecutable": false
     },
     "mac": {
       "target": [
@@ -89,8 +89,9 @@
       "icon": "assets/icon.icns",
       "category": "public.app-category.utilities",
       "darkModeSupport": true,
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "forceCodeSigning": false
     },
     "linux": {
       "target": [
